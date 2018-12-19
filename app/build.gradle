@@ -24,6 +24,10 @@ android {
             minifyEnabled false
         }
     }
+
+    androidExtensions {
+        experimental = true
+    }
 }
 
 dependencies {
