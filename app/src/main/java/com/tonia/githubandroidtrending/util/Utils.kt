@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.tonia.githubandroidtrending.GlideApp
+import com.tonia.githubandroidtrending.R
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -58,6 +59,7 @@ fun loadImageFromUrl(fragment: Fragment, url: String, imageView: ImageView) {
         .with(fragment)
         .load(url)
         .centerCrop()
+        .placeholder(R.drawable.ic_github_octocat)
         .into(imageView)
 }
 

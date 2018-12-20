@@ -4,4 +4,6 @@
     <string name="cd_repo_github_url">Repo GitHub url</string>
     <string name="action_refresh">Refresh</string>
     <string name="action_share">Share</string>
+    <string name="send_to">Send to:</string>
+    <string name="repo_share_text">Check this repo that I found - %s</string>
 </resources>

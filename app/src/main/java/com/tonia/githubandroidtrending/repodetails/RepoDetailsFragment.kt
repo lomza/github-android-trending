@@ -3,14 +3,17 @@ package com.tonia.githubandroidtrending.repodetails
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
-import com.bumptech.glide.Glide
+import androidx.appcompat.app.AppCompatActivity
 import com.tonia.githubandroidtrending.BaseFragment
-import com.tonia.githubandroidtrending.GlideApp
 import com.tonia.githubandroidtrending.R
 import com.tonia.githubandroidtrending.model.Repo
 import com.tonia.githubandroidtrending.util.loadImageFromUrl
 import kotlinx.android.synthetic.main.fragment_repo_details.view.*
+import kotlinx.android.synthetic.main.fragment_repo_list.*
 
 class RepoDetailsFragment : BaseFragment() {
 
@@ -26,6 +29,34 @@ class RepoDetailsFragment : BaseFragment() {
                     putParcelable(EXTRA_REPO, repo)
                 }
             }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        menu.clear()
+        inflater.inflate(R.menu.menu_repo_details, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_share -> {
+                repo?.let {
+                    shareRepo(it.html_url)
+                }
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        (context as AppCompatActivity).setSupportActionBar(toolbar)
+        toolbar.title = repo?.name
+        setHasOptionsMenu(true)
     }
 
     override fun getContentResource() = R.layout.fragment_repo_details
@@ -45,6 +76,7 @@ class RepoDetailsFragment : BaseFragment() {
                     view.textViewLanguage.text = language
                     view.textViewLicense.text = license?.name
                     view.textViewLastUpdated.text = updated_at
+                    view.textViewFullName.text = full_name
                     view.textViewDesc.text = description
                     view.imageButtonGitHubRepo.setOnClickListener {
                         if (html_url.isNotEmpty()) {
@@ -59,5 +91,14 @@ class RepoDetailsFragment : BaseFragment() {
     private fun showGitHubProjectInBrowser(url: String) {
         val intent = Intent(Intent.ACTION_VIEW).setData(Uri.parse(url))
         startActivity(intent)
+    }
+
+    private fun shareRepo(url: String) {
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, getString(R.string.repo_share_text, url))
+            type = "text/plain"
+        }
+        startActivity(Intent.createChooser(sendIntent, getString(R.string.send_to)))
     }
 }
