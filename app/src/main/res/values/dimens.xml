@@ -4,4 +4,7 @@
 
     <dimen name="small_padding">4dp</dimen>
     <dimen name="default_padding">8dp</dimen>
+
+    <dimen name="button_repo_min_height">48dp</dimen>
+    <dimen name="button_repo_min_width">80dp</dimen>
 </resources>
