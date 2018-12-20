@@ -3,10 +3,12 @@ package com.tonia.githubandroidtrending.util
 import android.content.Context
 import android.net.ConnectivityManager
 import android.util.Log
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.tonia.githubandroidtrending.GlideApp
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -49,6 +51,15 @@ fun <T> getSchedulersForSingleNetworkCall(): (Single<T>) -> Single<T> {
         it.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
     }
 }
+
+fun loadImageFromUrl(fragment: Fragment, url: String, imageView: ImageView) {
+    GlideApp
+        .with(fragment)
+        .load(url)
+        .centerCrop()
+        .into(imageView)
+}
+
 //
 //inline fun CompositeDisposable.callAndComposite(disposable: () -> Disposable) {
 //    this.add(disposable())

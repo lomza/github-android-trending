@@ -33,16 +33,16 @@ class RepoListFragment : BaseFragment() {
     override fun init(view: View, state: Bundle?) {
 
         (view.context as AppCompatActivity).setSupportActionBar(toolbar)
+        view.recyclerViewRepoList.layoutManager =
+                LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
 
-        setRepoList(view)
+        populateRepoList(view)
     }
 
-    private fun setRepoList(view: View) {
+    private fun populateRepoList(view: View) {
         compositeDisposable.add(GitHubService.getTrendingRepos(1)
             .subscribeBy(
                 onSuccess = { repos ->
-                    view.recyclerViewRepoList.layoutManager =
-                            LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
                     view.recyclerViewRepoList.adapter = RepoListAdapter(repos) {
                         (view.context as AppCompatActivity).addFragment(
                             RepoDetailsFragment.newInstance(it), R.id.container, RepoDetailsFragment.TAG)

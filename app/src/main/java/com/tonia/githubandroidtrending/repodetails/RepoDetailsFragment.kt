@@ -4,9 +4,12 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import com.bumptech.glide.Glide
 import com.tonia.githubandroidtrending.BaseFragment
+import com.tonia.githubandroidtrending.GlideApp
 import com.tonia.githubandroidtrending.R
 import com.tonia.githubandroidtrending.model.Repo
+import com.tonia.githubandroidtrending.util.loadImageFromUrl
 import kotlinx.android.synthetic.main.fragment_repo_details.view.*
 
 class RepoDetailsFragment : BaseFragment() {
@@ -33,6 +36,8 @@ class RepoDetailsFragment : BaseFragment() {
 
             repo?.let { repo ->
                 with(repo) {
+                    loadImageFromUrl(fragment = this@RepoDetailsFragment, url = owner.avatar_url, imageView = view.imageViewCollapsing)
+
                     view.textViewStars.text = stargazers_count.toString()
                     view.textViewForks.text = forks_count.toString()
                     view.textViewWatchers.text = watchers_count.toString()

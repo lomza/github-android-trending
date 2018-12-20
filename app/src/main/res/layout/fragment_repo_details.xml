@@ -23,8 +23,7 @@
                     android:id="@+id/imageViewCollapsing"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@android:drawable/toast_frame"
+                    android:minHeight="@dimen/image_repo_min_height"
                     app:layout_collapseMode="parallax"
                     android:contentDescription="@string/cd_repo_owner_avatar"/>
             <androidx.appcompat.widget.Toolbar
