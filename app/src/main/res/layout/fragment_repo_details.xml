@@ -114,12 +114,23 @@
                     android:drawablePadding="@dimen/small_padding"/>
 
             <TextView
+                    android:id="@+id/textViewLastUpdated"
+                    tools:text="2011-01-26 19:06:43"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textViewLanguage"
+                    android:padding="@dimen/default_padding"
+                    android:drawableStart="@drawable/ic_repo_updated"
+                    android:drawablePadding="@dimen/small_padding"/>
+
+            <TextView
                     android:id="@+id/textViewDesc"
                     tools:text="Bytecode rewriter that creates overloads of methods which vary only by return type."
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/textViewLanguage"
+                    app:layout_constraintTop_toBottomOf="@id/textViewLastUpdated"
                     android:paddingStart="@dimen/default_padding"
                     android:paddingEnd="@dimen/default_padding"/>
 

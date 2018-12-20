@@ -22,11 +22,11 @@ class RepoListAdapter(private val repos: ArrayList<Repo>,
 
     class RepoViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
         fun bind(repo: Repo, listener: (Repo) -> Unit) {
-            textViewTitle.text = repo.title
-            textViewDesc.text = repo.desc
+            textViewTitle.text = repo.full_name
+            textViewDesc.text = repo.description
             textViewLanguage.text = repo.language
-            textViewStars.text = repo.stars.toString()
-            textViewForks.text = repo.forks.toString()
+            textViewStars.text = repo.stargazers_count.toString()
+            textViewForks.text = repo.forks_count.toString()
 
             containerView.setOnClickListener { listener(repo) }
         }

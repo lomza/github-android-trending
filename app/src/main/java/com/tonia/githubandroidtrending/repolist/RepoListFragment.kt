@@ -28,9 +28,6 @@ class RepoListFragment : BaseFragment() {
     override fun init(view: View, state: Bundle?) {
         // TODO remove
         val repos = arrayListOf<Repo>()
-        repos.add(Repo("octocat/Android", "Great Android project", "Kotlin", 43, 11))
-        repos.add(Repo("gc/Lib-Android", "Great Android project", "Java", 25, 9))
-        repos.add(Repo("abc/Kotlin-And", "Great Android project", "Kotlin", 199, 58))
 
         view.recyclerViewRepoList.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
         view.recyclerViewRepoList.adapter = RepoListAdapter(repos) {

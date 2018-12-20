@@ -1,7 +1,16 @@
 package com.tonia.githubandroidtrending.model
 
-data class Repo(val title: String,
-                val desc: String,
-                val language: String,
-                val stars: Int,
-                val forks: Int)
+data class Repo(
+    val id: String,
+    val name: String,
+    val full_name: String,
+    val html_url: String,
+    val description: String,
+    val language: String,
+    val stargazers_count: Int,
+    val forks_count: Int,
+    val watchers_count: Int,
+    val updated_at: String,
+    val owner: Owner,
+    val license: License
+)

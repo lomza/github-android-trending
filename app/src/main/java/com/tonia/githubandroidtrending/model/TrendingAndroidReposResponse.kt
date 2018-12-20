@@ -1,4 +1,7 @@
 package com.tonia.githubandroidtrending.model
 
-class TrendingAndroidReposResponse {
-}
+data class TrendingAndroidReposResponse(
+    val total_count: Int,
+    val incomplete_results: Boolean,
+    val items: List<Repo>
+)
