@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        replaceFragment(RepoListFragment(), R.id.container)
+        replaceFragment(RepoListFragment.newInstance(), R.id.container)
     }
 
     private fun showRepoDetailsFragment() {

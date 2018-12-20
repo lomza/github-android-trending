@@ -9,7 +9,7 @@ import com.tonia.githubandroidtrending.model.Repo
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.view_repo_list_item.*
 
-class RepoListAdapter(private val repos: ArrayList<Repo>,
+class RepoListAdapter(private val repos: List<Repo>,
                       private val listener: (Repo) -> Unit) : RecyclerView.Adapter<RepoListAdapter.RepoViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =

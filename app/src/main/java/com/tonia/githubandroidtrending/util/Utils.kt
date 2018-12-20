@@ -7,6 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 
 /**
  * General top-level methods, used all across the project.
@@ -25,6 +30,8 @@ fun Any.logW(message: String) { Log.w(this.javaClass.simpleName, message) }
 
 fun Any.logE(message: String) { Log.e(this.javaClass.simpleName, message) }
 
+fun Any.logE(message: String, throwable: Throwable) { Log.e(this.javaClass.simpleName, message, throwable) }
+
 inline fun FragmentManager.transaction(call: FragmentTransaction.() -> FragmentTransaction) {
     beginTransaction().call().commit()
 }
@@ -36,3 +43,13 @@ fun AppCompatActivity.replaceFragment(fragment: Fragment, resId: Int) {
 fun AppCompatActivity.addFragment(fragment: Fragment, resId: Int, tag: String) {
     supportFragmentManager.transaction { add(resId, fragment).addToBackStack(tag) }
 }
+
+fun <T> getSchedulersForSingleNetworkCall(): (Single<T>) -> Single<T> {
+    return {
+        it.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+    }
+}
+//
+//inline fun CompositeDisposable.callAndComposite(disposable: () -> Disposable) {
+//    this.add(disposable())
+//}

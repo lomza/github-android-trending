@@ -1,5 +1,9 @@
 package com.tonia.githubandroidtrending.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class Repo(
     val id: String,
     val name: String,
@@ -10,7 +14,8 @@ data class Repo(
     val stargazers_count: Int,
     val forks_count: Int,
     val watchers_count: Int,
+    val open_issues_count: Int,
     val updated_at: String,
     val owner: Owner,
-    val license: License
-)
+    val license: License?
+) : Parcelable
