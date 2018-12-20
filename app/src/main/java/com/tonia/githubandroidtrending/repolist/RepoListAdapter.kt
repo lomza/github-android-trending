@@ -20,6 +20,10 @@ class RepoListAdapter(private var repos: MutableList<Repo>,
 
     override fun getItemCount() = repos.size
 
+    fun refreshRepos(repos: List<Repo>) {
+        this.repos = repos.toMutableList()
+    }
+
     fun addRepos(repos: List<Repo>) {
         this.repos.addAll(repos)
     }

@@ -1,6 +1,9 @@
 package com.tonia.githubandroidtrending.repolist
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,7 +13,9 @@ import com.tonia.githubandroidtrending.R
 import com.tonia.githubandroidtrending.network.GitHubService
 import com.tonia.githubandroidtrending.repodetails.RepoDetailsFragment
 import com.tonia.githubandroidtrending.util.addFragment
+import com.tonia.githubandroidtrending.util.gone
 import com.tonia.githubandroidtrending.util.logE
+import com.tonia.githubandroidtrending.util.visible
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_repo_list.*
@@ -18,6 +23,7 @@ import kotlinx.android.synthetic.main.fragment_repo_list.view.*
 
 class RepoListFragment : BaseFragment() {
 
+    private lateinit var parentView: View
     private lateinit var listAdapter: RepoListAdapter
     private val compositeDisposable by lazy { CompositeDisposable() }
     private var currentPage = 1
@@ -31,12 +37,30 @@ class RepoListFragment : BaseFragment() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_repo_list, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_refresh -> {
+                populateRepoList(refresh = true)
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
+    }
+
     override fun getContentResource() = R.layout.fragment_repo_list
 
     override fun init(view: View, state: Bundle?) {
 
-        (view.context as AppCompatActivity).setSupportActionBar(toolbar)
-        view.recyclerViewRepoList.layoutManager =
+        parentView = view
+
+        parentView.recyclerViewRepoList.layoutManager =
                 LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
         listAdapter = RepoListAdapter(mutableListOf()) {
             (view.context as AppCompatActivity).addFragment(
@@ -44,9 +68,9 @@ class RepoListFragment : BaseFragment() {
             )
         }
 
-        view.recyclerViewRepoList.adapter = listAdapter
+        parentView.recyclerViewRepoList.adapter = listAdapter
 
-        view.recyclerViewRepoList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        parentView.recyclerViewRepoList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
@@ -65,12 +89,21 @@ class RepoListFragment : BaseFragment() {
         populateRepoList()
     }
 
-    private fun populateRepoList() {
-        compositeDisposable.add(GitHubService.getTrendingRepos(currentPage)
-            .doFinally { isLoading = false }
+    private fun populateRepoList(refresh: Boolean = false) {
+        compositeDisposable.add(GitHubService.getTrendingRepos(if (refresh) 1 else currentPage)
+            .doOnSubscribe { parentView.progressBarList.visible() }
+            .doFinally {
+                isLoading = false
+                parentView.progressBarList.gone()
+            }
             .subscribeBy(
                 onSuccess = { repos ->
-                    listAdapter.addRepos(repos)
+                    if (refresh) {
+                        listAdapter.refreshRepos(repos)
+                        parentView.recyclerViewRepoList.scrollToPosition(0)
+                    } else {
+                        listAdapter.addRepos(repos)
+                    }
                     listAdapter.notifyDataSetChanged()
                 },
                 onError = {
@@ -82,7 +115,9 @@ class RepoListFragment : BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        (context as AppCompatActivity).setSupportActionBar(toolbar)
         toolbar.title = getString(R.string.app_name)
+        setHasOptionsMenu(true)
     }
 
     override fun onStop() {

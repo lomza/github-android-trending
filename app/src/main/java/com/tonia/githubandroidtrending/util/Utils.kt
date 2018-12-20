@@ -3,6 +3,7 @@ package com.tonia.githubandroidtrending.util
 import android.content.Context
 import android.net.ConnectivityManager
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -58,6 +59,18 @@ fun loadImageFromUrl(fragment: Fragment, url: String, imageView: ImageView) {
         .load(url)
         .centerCrop()
         .into(imageView)
+}
+
+fun View.visible() {
+    visibility = View.VISIBLE
+}
+
+fun View.invisible() {
+    visibility = View.INVISIBLE
+}
+
+fun View.gone() {
+    visibility = View.GONE
 }
 
 //
