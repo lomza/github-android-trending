@@ -32,3 +32,7 @@ inline fun FragmentManager.transaction(call: FragmentTransaction.() -> FragmentT
 fun AppCompatActivity.replaceFragment(fragment: Fragment, resId: Int) {
     supportFragmentManager.transaction { replace(resId, fragment) }
 }
+
+fun AppCompatActivity.addFragment(fragment: Fragment, resId: Int, tag: String) {
+    supportFragmentManager.transaction { add(resId, fragment).addToBackStack(tag) }
+}

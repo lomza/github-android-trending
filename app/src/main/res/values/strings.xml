@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Trending repos</string>
     <string name="cd_repo_owner_avatar">Repo owner avatar</string>
+    <string name="cd_repo_github_url">Repo GitHub url</string>
 </resources>
