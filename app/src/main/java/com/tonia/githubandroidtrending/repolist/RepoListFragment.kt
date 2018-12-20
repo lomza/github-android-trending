@@ -18,7 +18,10 @@ import kotlinx.android.synthetic.main.fragment_repo_list.view.*
 
 class RepoListFragment : BaseFragment() {
 
+    private lateinit var listAdapter: RepoListAdapter
     private val compositeDisposable by lazy { CompositeDisposable() }
+    private var currentPage = 1
+    private var isLoading = true
 
     companion object {
         const val TAG = "repo_list_fragment"
@@ -35,25 +38,45 @@ class RepoListFragment : BaseFragment() {
         (view.context as AppCompatActivity).setSupportActionBar(toolbar)
         view.recyclerViewRepoList.layoutManager =
                 LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
+        listAdapter = RepoListAdapter(mutableListOf()) {
+            (view.context as AppCompatActivity).addFragment(
+                RepoDetailsFragment.newInstance(it), R.id.container, RepoDetailsFragment.TAG
+            )
+        }
 
-        populateRepoList(view)
+        view.recyclerViewRepoList.adapter = listAdapter
+
+        view.recyclerViewRepoList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val itemCount = recyclerView.layoutManager?.itemCount ?: 0
+                val lastVisiblePosition =
+                    (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+
+                if (!isLoading && itemCount <= (lastVisiblePosition + 1)) {
+                    currentPage++
+                    isLoading = true
+                    populateRepoList()
+                }
+            }
+        })
+
+        populateRepoList()
     }
 
-    private fun populateRepoList(view: View) {
-        compositeDisposable.add(GitHubService.getTrendingRepos(1)
+    private fun populateRepoList() {
+        compositeDisposable.add(GitHubService.getTrendingRepos(currentPage)
+            .doFinally { isLoading = false }
             .subscribeBy(
                 onSuccess = { repos ->
-                    view.recyclerViewRepoList.adapter = RepoListAdapter(repos) {
-                        (view.context as AppCompatActivity).addFragment(
-                            RepoDetailsFragment.newInstance(it), R.id.container, RepoDetailsFragment.TAG)
-                    }
+                    listAdapter.addRepos(repos)
+                    listAdapter.notifyDataSetChanged()
                 },
                 onError = {
                     logE(it.message ?: "Error getting repo list.", it)
                 }
             ))
-
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

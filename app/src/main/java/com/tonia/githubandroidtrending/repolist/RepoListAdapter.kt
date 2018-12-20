@@ -9,7 +9,7 @@ import com.tonia.githubandroidtrending.model.Repo
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.view_repo_list_item.*
 
-class RepoListAdapter(private val repos: List<Repo>,
+class RepoListAdapter(private var repos: MutableList<Repo>,
                       private val listener: (Repo) -> Unit) : RecyclerView.Adapter<RepoListAdapter.RepoViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
@@ -19,6 +19,10 @@ class RepoListAdapter(private val repos: List<Repo>,
     override fun onBindViewHolder(holder: RepoViewHolder, position: Int) = holder.bind(repos[position], listener)
 
     override fun getItemCount() = repos.size
+
+    fun addRepos(repos: List<Repo>) {
+        this.repos.addAll(repos)
+    }
 
     class RepoViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
         fun bind(repo: Repo, listener: (Repo) -> Unit) {
