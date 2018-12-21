@@ -1,8 +1,11 @@
 package com.tonia.githubandroidtrending.network
 
+import com.tonia.githubandroidtrending.BuildConfig
 import com.tonia.githubandroidtrending.model.Repo
 import com.tonia.githubandroidtrending.util.getSchedulersForSingleNetworkCall
 import io.reactivex.Single
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -16,11 +19,20 @@ object GitHubService {
 
     private var retrofit: Retrofit? = null
 
+    private val okHttpClient: OkHttpClient by lazy {
+        OkHttpClient().newBuilder()
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+            })
+            .build()
+    }
+
     private val client: Retrofit by lazy {
         retrofit ?: Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .client(okHttpClient)
             .build()
     }
 

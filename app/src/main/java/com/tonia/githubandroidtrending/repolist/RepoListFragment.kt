@@ -25,7 +25,7 @@ class RepoListFragment : BaseFragment() {
 
     private lateinit var parentView: View
     private lateinit var listAdapter: RepoListAdapter
-    private val compositeDisposable by lazy { CompositeDisposable() }
+    private var compositeDisposable = CompositeDisposable()
     private var currentPage = 1
     private var isLoading = true
 
@@ -77,16 +77,24 @@ class RepoListFragment : BaseFragment() {
                 val itemCount = recyclerView.layoutManager?.itemCount ?: 0
                 val lastVisiblePosition =
                     (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-
-                if (!isLoading && itemCount <= (lastVisiblePosition + 1)) {
-                    currentPage++
-                    isLoading = true
-                    populateRepoList()
-                }
+                loadMore(itemCount, lastVisiblePosition)
             }
         })
+    }
 
+    override fun onStart() {
+        super.onStart()
+
+        compositeDisposable = CompositeDisposable()
         populateRepoList()
+    }
+
+    private fun loadMore(itemCount: Int, lastVisiblePosition: Int) {
+        if (!isLoading && itemCount <= (lastVisiblePosition + 1)) {
+            currentPage++
+            isLoading = true
+            populateRepoList()
+        }
     }
 
     private fun populateRepoList(refresh: Boolean = false) {
