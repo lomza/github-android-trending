@@ -1,14 +1,15 @@
 package com.tonia.githubandroidtrending.util
 
+import android.content.Context
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
-import com.tonia.githubandroidtrending.BaseDialogFragment
 import com.tonia.githubandroidtrending.GlideApp
 import com.tonia.githubandroidtrending.R
 import io.reactivex.Single
@@ -74,15 +75,6 @@ fun View.gone() {
 val repoDateInputFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
 val repoDateOutputFormatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
-
-fun showInternetNotAvailableDialog(fragmentManager: FragmentManager) =
-    BaseDialogFragment.newInstance(R.string.internet_connection_error_title, R.string.internet_connection_error_message)
-        .show(fragmentManager, "no_internet_dialog")
-
-fun showGeneralErrorDialog(fragmentManager: FragmentManager) =
-    BaseDialogFragment.newInstance(R.string.general_error_title, R.string.general_error_message)
-        .show(fragmentManager, "general_error_dialog")
-
 fun networkCall(onSuccess: () -> Unit, onError: (isConnectivityError: Boolean) -> Unit) = ReactiveNetwork.checkInternetConnectivity()
     .compose(getSchedulersForSingleNetworkCall())
     .subscribeBy(
@@ -93,3 +85,8 @@ fun networkCall(onSuccess: () -> Unit, onError: (isConnectivityError: Boolean) -
             onError(false)
         }
     )
+
+fun Context.toastShort(text: String) = Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+
+fun Context.toastLong(text: String) = Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+

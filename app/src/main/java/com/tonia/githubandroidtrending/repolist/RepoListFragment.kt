@@ -5,7 +5,9 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tonia.githubandroidtrending.BaseFragment
@@ -84,8 +86,6 @@ class RepoListFragment : BaseFragment() {
 
         compositeDisposable = CompositeDisposable()
         populateRepoList(refresh = true)
-
-        //showGeneralErrorDialog().show((context as AppCompatActivity).supportFragmentManager, "HH")
     }
 
     private fun loadMore(itemCount: Int, lastVisiblePosition: Int) {
@@ -119,7 +119,7 @@ class RepoListFragment : BaseFragment() {
                             },
                             onError = {
                                 logE(it.message ?: "Error getting repo list.", it)
-                                showGeneralErrorDialog((parentView.context as AppCompatActivity).supportFragmentManager)
+                                context?.toastLong(getString(R.string.internet_connection_error_message))
                             }
                         )
                 },
@@ -128,9 +128,9 @@ class RepoListFragment : BaseFragment() {
                     parentView.progressBarList.gone()
 
                     if (isConnectionError) {
-                        showInternetNotAvailableDialog((parentView.context as AppCompatActivity).supportFragmentManager)
+                        context?.toastLong(getString(R.string.internet_connection_error_message))
                     } else {
-                        showGeneralErrorDialog((parentView.context as AppCompatActivity).supportFragmentManager)
+                        context?.toastLong(getString(R.string.general_error_message))
                     }
                 })
         )
