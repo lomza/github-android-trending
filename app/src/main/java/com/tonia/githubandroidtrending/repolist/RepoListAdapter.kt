@@ -30,13 +30,15 @@ class RepoListAdapter(private var repos: MutableList<Repo>,
 
     class RepoViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
         fun bind(repo: Repo, listener: (Repo) -> Unit) {
-            textViewTitle.text = repo.full_name
-            textViewDesc.text = repo.description
-            textViewLanguage.text = repo.language
-            textViewStars.text = repo.stargazers_count.toString()
-            textViewForks.text = repo.forks_count.toString()
+            with(repo) {
+                textViewTitle.text = full_name
+                textViewDesc.text = description
+                textViewLanguage.text = if (language?.isNotEmpty() != null) language else "?"
+                textViewStars.text = stargazers_count.toString()
+                textViewForks.text = forks_count.toString()
 
-            containerView.setOnClickListener { listener(repo) }
+                containerView.setOnClickListener { listener(this) }
+            }
         }
     }
 }

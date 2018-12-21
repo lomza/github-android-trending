@@ -6,7 +6,7 @@
         android:id="@+id/repoItemParent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardBackgroundColor="@color/colorPrimaryLight"
         android:layout_margin="@dimen/small_padding"
         app:cardCornerRadius="@dimen/small_margin">
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,7 +24,8 @@
                 android:padding="@dimen/default_padding"
                 android:textStyle="bold"
                 android:drawableStart="@drawable/ic_repo"
-                android:drawablePadding="@dimen/small_padding"/>
+                android:drawablePadding="@dimen/small_padding"
+                android:textSize="@dimen/text_size_title"/>
 
         <TextView
                 android:id="@+id/textViewDesc"

@@ -123,15 +123,27 @@
                     android:drawableStart="@drawable/ic_repo_updated"
                     android:drawablePadding="@dimen/small_padding"/>
 
+            <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_height"
+                    android:background="@color/colorDivider"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textViewLastUpdated"
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:layout_marginBottom="@dimen/small_margin"/>
+
             <TextView
                     android:id="@+id/textViewFullName"
                     tools:text="JakeWharton/OverloadReturn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/textViewLastUpdated"
+                    app:layout_constraintTop_toBottomOf="@id/divider"
                     android:padding="@dimen/default_padding"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_size_title"/>
 
             <TextView
                     android:id="@+id/textViewDesc"
@@ -166,4 +178,14 @@
                     android:padding="@dimen/default_padding"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabShare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_share"
+            app:layout_anchor="@id/appBarLayout"
+            app:layout_anchorGravity="bottom|right|end"
+            android:layout_marginEnd="@dimen/big_margin"
+    />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

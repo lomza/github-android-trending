@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.tonia.githubandroidtrending.BaseFragment
@@ -36,21 +35,6 @@ class RepoDetailsFragment : BaseFragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         menu.clear()
-        inflater.inflate(R.menu.menu_repo_details, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_share -> {
-                repo?.let {
-                    shareRepo(it.html_url)
-                }
-                true
-            }
-            else -> {
-                super.onOptionsItemSelected(item)
-            }
-        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -75,8 +59,8 @@ class RepoDetailsFragment : BaseFragment() {
                     view.textViewForks.text = forks_count.toString()
                     view.textViewWatchers.text = watchers_count.toString()
                     view.textViewOpenIssues.text = open_issues_count.toString()
-                    view.textViewLanguage.text = language
-                    view.textViewLicense.text = license?.name
+                    view.textViewLanguage.text = if (language?.isNotEmpty() != true) language else "?"
+                    view.textViewLicense.text = if (license?.name?.isNotEmpty() != true) license?.name else "?"
                     view.textViewLastUpdated.text = repoDateOutputFormatter.format(repoDateInputFormatter.parse(updated_at))
                     view.textViewFullName.text = full_name
                     view.textViewDesc.text = description
@@ -84,6 +68,10 @@ class RepoDetailsFragment : BaseFragment() {
                         if (html_url.isNotEmpty()) {
                             showGitHubProjectInBrowser(html_url)
                         }
+                    }
+
+                    view.fabShare.setOnClickListener {
+                        shareRepo(html_url)
                     }
                 }
             }

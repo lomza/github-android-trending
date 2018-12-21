@@ -73,7 +73,7 @@ fun View.gone() {
 }
 
 val repoDateInputFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
-val repoDateOutputFormatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+val repoDateOutputFormatter = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
 
 fun networkCall(onSuccess: () -> Unit, onError: (isConnectivityError: Boolean) -> Unit) = ReactiveNetwork.checkInternetConnectivity()
     .compose(getSchedulersForSingleNetworkCall())
