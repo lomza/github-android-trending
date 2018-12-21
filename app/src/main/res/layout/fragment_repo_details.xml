@@ -168,14 +168,23 @@
                     android:minWidth="@dimen/button_repo_min_width"
                     android:contentDescription="@string/cd_repo_github_url"/>
 
-            <TextView
-                    android:id="@+id/textViewReadmeContent"
+            <es.dmoral.markdownview.MarkdownView
+                    android:id="@+id/markdownViewReadmeContent"
                     tools:text="The annotation is available in an artifact at the Maven coordinates com.jakewharton.overloadreturn:overload-return-annotations. This artifact can be added as compileOnly (Gradle) or provided (Maven) so that it does not wind up in the final artifact if desired. Android Gradle Plugin Add and apply the plugin to any library or application module and it will automatically register itself as a transform."
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/imageButtonGitHubRepo"
-                    android:padding="@dimen/default_padding"/>
+                    android:padding="@dimen/default_padding" />
+
+            <ProgressBar
+                    android:id="@+id/progressBarDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 

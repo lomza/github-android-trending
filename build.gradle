@@ -22,6 +22,7 @@ buildscript {
         rxJavaVersion = '2.2.4'
         rxAndroidVersion = '2.1.0'
         rxKotlinVersion = '2.3.0'
+        markdownViewVersion = '0.1.2'
         glideVersion = '4.8.0'
         jUnitVersion = '4.12'
         testRunnerVersion = '1.1.1'
@@ -45,6 +46,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url "https://jitpack.io" }
     }
 }
 

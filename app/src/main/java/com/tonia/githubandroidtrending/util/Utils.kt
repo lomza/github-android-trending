@@ -89,4 +89,3 @@ fun networkCall(onSuccess: () -> Unit, onError: (isConnectivityError: Boolean) -
 fun Context.toastShort(text: String) = Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
 
 fun Context.toastLong(text: String) = Toast.makeText(this, text, Toast.LENGTH_LONG).show()
-

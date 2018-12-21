@@ -2,6 +2,7 @@ package com.tonia.githubandroidtrending.network
 
 import com.tonia.githubandroidtrending.BuildConfig
 import com.tonia.githubandroidtrending.model.Repo
+import com.tonia.githubandroidtrending.model.RepoReadmeResponse
 import com.tonia.githubandroidtrending.util.getSchedulersForSingleNetworkCall
 import io.reactivex.Single
 import okhttp3.OkHttpClient
@@ -45,5 +46,9 @@ object GitHubService {
             .flatMap {
                 return@flatMap Single.just(it.items)
             }
+            .compose(getSchedulersForSingleNetworkCall())
+
+    fun getRepoReadme(owner: String, repo: String): Single<RepoReadmeResponse> =
+        service.getRepoReadme(owner, repo)
             .compose(getSchedulersForSingleNetworkCall())
 }

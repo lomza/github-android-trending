@@ -10,15 +10,18 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tonia.githubandroidtrending.BaseFragment
 import com.tonia.githubandroidtrending.R
 import com.tonia.githubandroidtrending.model.Repo
-import com.tonia.githubandroidtrending.util.loadImageFromUrl
-import com.tonia.githubandroidtrending.util.repoDateInputFormatter
-import com.tonia.githubandroidtrending.util.repoDateOutputFormatter
+import com.tonia.githubandroidtrending.network.GitHubService.getRepoReadme
+import com.tonia.githubandroidtrending.util.*
+import es.dmoral.markdownview.MarkdownView
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_repo_details.view.*
 import kotlinx.android.synthetic.main.fragment_repo_list.*
 
 class RepoDetailsFragment : BaseFragment() {
 
     private var repo: Repo? = null
+    private var compositeDisposable = CompositeDisposable()
 
     companion object {
         const val TAG = "repo_details_fragment"
@@ -53,7 +56,11 @@ class RepoDetailsFragment : BaseFragment() {
 
             repo?.let { repo ->
                 with(repo) {
-                    loadImageFromUrl(fragment = this@RepoDetailsFragment, url = owner.avatar_url, imageView = view.imageViewCollapsing)
+                    loadImageFromUrl(
+                        fragment = this@RepoDetailsFragment,
+                        url = owner.avatar_url,
+                        imageView = view.imageViewCollapsing
+                    )
 
                     view.textViewStars.text = stargazers_count.toString()
                     view.textViewForks.text = forks_count.toString()
@@ -61,7 +68,8 @@ class RepoDetailsFragment : BaseFragment() {
                     view.textViewOpenIssues.text = open_issues_count.toString()
                     view.textViewLanguage.text = if (language?.isNotEmpty() != true) language else "?"
                     view.textViewLicense.text = if (license?.name?.isNotEmpty() != true) license?.name else "?"
-                    view.textViewLastUpdated.text = repoDateOutputFormatter.format(repoDateInputFormatter.parse(updated_at))
+                    view.textViewLastUpdated.text =
+                            repoDateOutputFormatter.format(repoDateInputFormatter.parse(updated_at))
                     view.textViewFullName.text = full_name
                     view.textViewDesc.text = description
                     view.imageButtonGitHubRepo.setOnClickListener {
@@ -73,6 +81,46 @@ class RepoDetailsFragment : BaseFragment() {
                     view.fabShare.setOnClickListener {
                         shareRepo(html_url)
                     }
+
+
+                    compositeDisposable = CompositeDisposable()
+                    compositeDisposable.add(
+                        networkCall(
+                            onSuccess = {
+                                // Get repo's README content
+                                getRepoReadme(owner.login, name)
+                                    .doOnSubscribe { view.progressBarDetails.visible() }
+                                    .subscribeBy(
+                                        onError = {
+                                            view.progressBarDetails.gone()
+                                            context?.toastLong(getString(R.string.general_error_message))
+                                        },
+                                        onSuccess = {response ->
+                                            view.markdownViewReadmeContent.loadFromUrl(response.download_url)
+                                            view.markdownViewReadmeContent.setOnMarkdownRenderingListener(object :
+                                                MarkdownView.OnMarkdownRenderingListener {
+                                                override fun onMarkdownRenderError() {
+                                                    view.progressBarDetails.gone()
+                                                    context?.toastLong(getString(R.string.general_error_message))
+                                                }
+
+                                                override fun onMarkdownFinishedRendering() {
+                                                    view.progressBarDetails.gone()
+                                                }
+                                            })
+                                        }
+                                    )
+                            },
+                            onError = { isConnectionError ->
+                                view.progressBarDetails.gone()
+
+                                if (isConnectionError) {
+                                    context?.toastLong(getString(R.string.internet_connection_error_message))
+                                } else {
+                                    context?.toastLong(getString(R.string.general_error_message))
+                                }
+                            })
+                    )
                 }
             }
         }
