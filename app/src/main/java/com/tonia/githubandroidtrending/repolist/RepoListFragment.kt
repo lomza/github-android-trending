@@ -12,10 +12,7 @@ import com.tonia.githubandroidtrending.BaseFragment
 import com.tonia.githubandroidtrending.R
 import com.tonia.githubandroidtrending.network.GitHubService
 import com.tonia.githubandroidtrending.repodetails.RepoDetailsFragment
-import com.tonia.githubandroidtrending.util.addFragment
-import com.tonia.githubandroidtrending.util.gone
-import com.tonia.githubandroidtrending.util.logE
-import com.tonia.githubandroidtrending.util.visible
+import com.tonia.githubandroidtrending.util.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_repo_list.*
@@ -86,7 +83,9 @@ class RepoListFragment : BaseFragment() {
         super.onStart()
 
         compositeDisposable = CompositeDisposable()
-        populateRepoList()
+        populateRepoList(refresh = true)
+
+        //showGeneralErrorDialog().show((context as AppCompatActivity).supportFragmentManager, "HH")
     }
 
     private fun loadMore(itemCount: Int, lastVisiblePosition: Int) {
@@ -98,32 +97,49 @@ class RepoListFragment : BaseFragment() {
     }
 
     private fun populateRepoList(refresh: Boolean = false) {
-        compositeDisposable.add(GitHubService.getTrendingRepos(if (refresh) 1 else currentPage)
-            .doOnSubscribe { parentView.progressBarList.visible() }
-            .doFinally {
-                isLoading = false
-                parentView.progressBarList.gone()
-            }
-            .subscribeBy(
-                onSuccess = { repos ->
-                    if (refresh) {
-                        listAdapter.refreshRepos(repos)
-                        parentView.recyclerViewRepoList.scrollToPosition(0)
-                    } else {
-                        listAdapter.addRepos(repos)
-                    }
-                    listAdapter.notifyDataSetChanged()
+        compositeDisposable.add(
+            networkCall(
+                onSuccess = {
+                    // Get and set repos list
+                    GitHubService.getTrendingRepos(if (refresh) 1 else currentPage)
+                        .doOnSubscribe { parentView.progressBarList.visible() }
+                        .doFinally {
+                            isLoading = false
+                            parentView.progressBarList.gone()
+                        }
+                        .subscribeBy(
+                            onSuccess = { repos ->
+                                if (refresh) {
+                                    listAdapter.refreshRepos(repos)
+                                    parentView.recyclerViewRepoList.scrollToPosition(0)
+                                } else {
+                                    listAdapter.addRepos(repos)
+                                }
+                                listAdapter.notifyDataSetChanged()
+                            },
+                            onError = {
+                                logE(it.message ?: "Error getting repo list.", it)
+                                showGeneralErrorDialog((parentView.context as AppCompatActivity).supportFragmentManager)
+                            }
+                        )
                 },
-                onError = {
-                    logE(it.message ?: "Error getting repo list.", it)
-                }
-            ))
+                onError = { isConnectionError ->
+                    isLoading = false
+                    parentView.progressBarList.gone()
+
+                    if (isConnectionError) {
+                        showInternetNotAvailableDialog((parentView.context as AppCompatActivity).supportFragmentManager)
+                    } else {
+                        showGeneralErrorDialog((parentView.context as AppCompatActivity).supportFragmentManager)
+                    }
+                })
+        )
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        (context as AppCompatActivity).setSupportActionBar(toolbar)
+        (parentView.context as AppCompatActivity).setSupportActionBar(toolbar)
         toolbar.title = getString(R.string.app_name)
         setHasOptionsMenu(true)
     }

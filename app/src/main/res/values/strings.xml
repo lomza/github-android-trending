@@ -6,4 +6,9 @@
     <string name="action_share">Share</string>
     <string name="send_to">Send to:</string>
     <string name="repo_share_text">Check this repo that I found - %s</string>
+    <string name="internet_connection_error_title">No Internet</string>
+    <string name="internet_connection_error_message">Internet connection is not available. Please check your WiFi or mobile network settings.</string>
+    <string name="general_error_title">Oops!</string>
+    <string name="general_error_message">Something went wrong&#8230;</string>
+
 </resources>

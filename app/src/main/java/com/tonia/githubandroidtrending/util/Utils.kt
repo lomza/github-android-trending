@@ -1,7 +1,5 @@
 package com.tonia.githubandroidtrending.util
 
-import android.content.Context
-import android.net.ConnectivityManager
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -9,22 +7,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
+import com.tonia.githubandroidtrending.BaseDialogFragment
 import com.tonia.githubandroidtrending.GlideApp
 import com.tonia.githubandroidtrending.R
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
- * General top-level methods, used all across the project.
+ * General top-level variables and methods, used all across the project.
  */
-
-fun Context.isInternet(): Boolean {
-    val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    return connectivityManager.activeNetworkInfo?.isConnected.let { it } ?: false
-}
 
 fun Any.logD(message: String) { Log.d(this.javaClass.simpleName, message) }
 
@@ -75,7 +71,25 @@ fun View.gone() {
     visibility = View.GONE
 }
 
-//
-//inline fun CompositeDisposable.callAndComposite(disposable: () -> Disposable) {
-//    this.add(disposable())
-//}
+val repoDateInputFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
+val repoDateOutputFormatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+
+
+fun showInternetNotAvailableDialog(fragmentManager: FragmentManager) =
+    BaseDialogFragment.newInstance(R.string.internet_connection_error_title, R.string.internet_connection_error_message)
+        .show(fragmentManager, "no_internet_dialog")
+
+fun showGeneralErrorDialog(fragmentManager: FragmentManager) =
+    BaseDialogFragment.newInstance(R.string.general_error_title, R.string.general_error_message)
+        .show(fragmentManager, "general_error_dialog")
+
+fun networkCall(onSuccess: () -> Unit, onError: (isConnectivityError: Boolean) -> Unit) = ReactiveNetwork.checkInternetConnectivity()
+    .compose(getSchedulersForSingleNetworkCall())
+    .subscribeBy(
+        onSuccess = { isConnectivity ->
+            if (isConnectivity) onSuccess() else onError(true)
+        },
+        onError = {
+            onError(false)
+        }
+    )

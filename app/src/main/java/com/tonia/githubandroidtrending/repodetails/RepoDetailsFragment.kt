@@ -12,6 +12,8 @@ import com.tonia.githubandroidtrending.BaseFragment
 import com.tonia.githubandroidtrending.R
 import com.tonia.githubandroidtrending.model.Repo
 import com.tonia.githubandroidtrending.util.loadImageFromUrl
+import com.tonia.githubandroidtrending.util.repoDateInputFormatter
+import com.tonia.githubandroidtrending.util.repoDateOutputFormatter
 import kotlinx.android.synthetic.main.fragment_repo_details.view.*
 import kotlinx.android.synthetic.main.fragment_repo_list.*
 
@@ -75,7 +77,7 @@ class RepoDetailsFragment : BaseFragment() {
                     view.textViewOpenIssues.text = open_issues_count.toString()
                     view.textViewLanguage.text = language
                     view.textViewLicense.text = license?.name
-                    view.textViewLastUpdated.text = updated_at
+                    view.textViewLastUpdated.text = repoDateOutputFormatter.format(repoDateInputFormatter.parse(updated_at))
                     view.textViewFullName.text = full_name
                     view.textViewDesc.text = description
                     view.imageButtonGitHubRepo.setOnClickListener {
