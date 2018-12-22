@@ -55,74 +55,78 @@ class RepoDetailsFragment : BaseFragment() {
             repo = it.getParcelable(EXTRA_REPO)
 
             repo?.let { repo ->
-                with(repo) {
-                    loadImageFromUrl(
-                        fragment = this@RepoDetailsFragment,
-                        url = owner.avatar_url,
-                        imageView = view.imageViewCollapsing
-                    )
+                setRepoView(repo, view)
+            }
+        }
+    }
 
-                    view.textViewStars.text = stargazers_count.toString()
-                    view.textViewForks.text = forks_count.toString()
-                    view.textViewWatchers.text = watchers_count.toString()
-                    view.textViewOpenIssues.text = open_issues_count.toString()
-                    view.textViewLanguage.text = if(language != null && language.isNotEmpty()) language else "?"
-                    view.textViewLicense.text = if (license?.name != null && license.name.isNotEmpty()) license.name else "?"
-                    view.textViewLastUpdated.text =
-                            repoDateOutputFormatter.format(repoDateInputFormatter.parse(updated_at))
-                    view.textViewFullName.text = full_name
-                    view.textViewDesc.text = description
-                    view.imageButtonGitHubRepo.setOnClickListener {
-                        if (html_url.isNotEmpty()) {
-                            showGitHubProjectInBrowser(html_url)
-                        }
-                    }
+    private fun setRepoView(repo: Repo, view: View) {
+        with(repo) {
+            loadImageFromUrl(
+                fragment = this@RepoDetailsFragment,
+                url = owner.avatar_url,
+                imageView = view.imageViewCollapsing
+            )
 
-                    view.fabShare.setOnClickListener {
-                        shareRepo(html_url)
-                    }
-
-
-                    compositeDisposable = CompositeDisposable()
-                    compositeDisposable.add(
-                        networkCall(
-                            onSuccess = {
-                                // Get repo's README content
-                                getRepoReadme(owner.login, name)
-                                    .doOnSubscribe { view.progressBarDetails.visible() }
-                                    .subscribeBy(
-                                        onError = {
-                                            view.progressBarDetails.gone()
-                                            context?.toastLong(getString(R.string.general_error_message))
-                                        },
-                                        onSuccess = {response ->
-                                            view.markdownViewReadmeContent.loadFromUrl(response.download_url)
-                                            view.markdownViewReadmeContent.setOnMarkdownRenderingListener(object :
-                                                MarkdownView.OnMarkdownRenderingListener {
-                                                override fun onMarkdownRenderError() {
-                                                    view.progressBarDetails.gone()
-                                                    context?.toastLong(getString(R.string.general_error_message))
-                                                }
-
-                                                override fun onMarkdownFinishedRendering() {
-                                                    view.progressBarDetails.gone()
-                                                }
-                                            })
-                                        }
-                                    )
-                            },
-                            onError = { isConnectionError ->
-                                view.progressBarDetails.gone()
-
-                                if (isConnectionError) {
-                                    context?.toastLong(getString(R.string.internet_connection_error_message))
-                                } else {
-                                    context?.toastLong(getString(R.string.general_error_message))
-                                }
-                            })
-                    )
+            view.textViewStars.text = stargazers_count.toString()
+            view.textViewForks.text = forks_count.toString()
+            view.textViewWatchers.text = watchers_count.toString()
+            view.textViewOpenIssues.text = open_issues_count.toString()
+            view.textViewLanguage.text = if(language != null && language.isNotEmpty()) language else "?"
+            view.textViewLicense.text = if (license?.name != null && license.name.isNotEmpty()) license.name else "?"
+            view.textViewLastUpdated.text =
+                    repoDateOutputFormatter.format(repoDateInputFormatter.parse(updated_at))
+            view.textViewFullName.text = full_name
+            view.textViewDesc.text = description
+            view.imageButtonGitHubRepo.setOnClickListener {
+                if (html_url.isNotEmpty()) {
+                    showGitHubProjectInBrowser(html_url)
                 }
             }
+
+            view.fabShare.setOnClickListener {
+                shareRepo(html_url)
+            }
+
+            compositeDisposable = CompositeDisposable()
+            compositeDisposable.add(
+                networkCall(
+                    onSuccess = {
+                        // Get repo's README content
+                        getRepoReadme(owner.login, name)
+                            .doOnSubscribe { view.progressBarDetails.visible() }
+                            .subscribeBy(
+                                onError = {
+                                    view.progressBarDetails.gone()
+                                    context?.toastLong(getString(R.string.general_error_message))
+                                },
+                                onSuccess = {response ->
+                                    // load README markdown from specified url
+                                    view.markdownViewReadmeContent.loadFromUrl(response.download_url)
+                                    view.markdownViewReadmeContent.setOnMarkdownRenderingListener(object :
+                                        MarkdownView.OnMarkdownRenderingListener {
+                                        override fun onMarkdownRenderError() {
+                                            view.progressBarDetails.gone()
+                                            context?.toastLong(getString(R.string.general_error_message))
+                                        }
+
+                                        override fun onMarkdownFinishedRendering() {
+                                            view.progressBarDetails.gone()
+                                        }
+                                    })
+                                }
+                            )
+                    },
+                    onError = { isConnectionError ->
+                        view.progressBarDetails.gone()
+
+                        if (isConnectionError) {
+                            context?.toastLong(getString(R.string.internet_connection_error_message))
+                        } else {
+                            context?.toastLong(getString(R.string.general_error_message))
+                        }
+                    })
+            )
         }
     }
 
@@ -138,5 +142,12 @@ class RepoDetailsFragment : BaseFragment() {
             type = "text/plain"
         }
         startActivity(Intent.createChooser(sendIntent, getString(R.string.send_to)))
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        compositeDisposable.clear()
+        compositeDisposable.dispose()
     }
 }

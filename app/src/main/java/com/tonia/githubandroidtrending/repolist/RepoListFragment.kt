@@ -57,8 +57,7 @@ class RepoListFragment : BaseFragment() {
 
         parentView = view
 
-        parentView.recyclerViewRepoList.layoutManager =
-                LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
+        parentView.recyclerViewRepoList.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
         listAdapter = RepoListAdapter(mutableListOf()) {
             (view.context as AppCompatActivity).addFragment(
                 RepoDetailsFragment.newInstance(it), R.id.container, RepoDetailsFragment.TAG
@@ -72,8 +71,7 @@ class RepoListFragment : BaseFragment() {
                 super.onScrolled(recyclerView, dx, dy)
 
                 val itemCount = recyclerView.layoutManager?.itemCount ?: 0
-                val lastVisiblePosition =
-                    (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                val lastVisiblePosition = (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
                 loadMore(itemCount, lastVisiblePosition)
             }
         })
