@@ -33,7 +33,7 @@ class RepoListAdapter(private var repos: MutableList<Repo>,
             with(repo) {
                 textViewTitle.text = full_name
                 textViewDesc.text = description
-                textViewLanguage.text = if (language?.isNotEmpty() != null) language else "?"
+                textViewLanguage.text = if(language != null && language.isNotEmpty()) language else "?"
                 textViewStars.text = stargazers_count.toString()
                 textViewForks.text = forks_count.toString()
 

@@ -11,14 +11,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        initView()
+        showRepoList()
     }
 
-    private fun initView() {
+    private fun showRepoList() {
         replaceFragment(RepoListFragment.newInstance(), R.id.container)
-    }
-
-    private fun showRepoDetailsFragment() {
-        // TODO
     }
 }

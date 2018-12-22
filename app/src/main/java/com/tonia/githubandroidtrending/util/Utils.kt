@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 /**
- * General top-level variables and methods, used all across the project.
+ * General extension functions, top-level variables and functions, used all across the project.
  */
 
 fun Any.logD(message: String) { Log.d(this.javaClass.simpleName, message) }
@@ -32,6 +32,16 @@ fun Any.logW(message: String) { Log.w(this.javaClass.simpleName, message) }
 fun Any.logE(message: String) { Log.e(this.javaClass.simpleName, message) }
 
 fun Any.logE(message: String, throwable: Throwable) { Log.e(this.javaClass.simpleName, message, throwable) }
+
+fun Context.toastShort(text: String) = Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+
+fun Context.toastLong(text: String) = Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+
+fun View.visible() { visibility = View.VISIBLE }
+
+fun View.invisible() { visibility = View.INVISIBLE }
+
+fun View.gone() { visibility = View.GONE }
 
 inline fun FragmentManager.transaction(call: FragmentTransaction.() -> FragmentTransaction) {
     beginTransaction().call().commit()
@@ -60,18 +70,6 @@ fun loadImageFromUrl(fragment: Fragment, url: String, imageView: ImageView) {
         .into(imageView)
 }
 
-fun View.visible() {
-    visibility = View.VISIBLE
-}
-
-fun View.invisible() {
-    visibility = View.INVISIBLE
-}
-
-fun View.gone() {
-    visibility = View.GONE
-}
-
 val repoDateInputFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
 val repoDateOutputFormatter = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
 
@@ -86,6 +84,3 @@ fun networkCall(onSuccess: () -> Unit, onError: (isConnectivityError: Boolean) -
         }
     )
 
-fun Context.toastShort(text: String) = Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
-
-fun Context.toastLong(text: String) = Toast.makeText(this, text, Toast.LENGTH_LONG).show()

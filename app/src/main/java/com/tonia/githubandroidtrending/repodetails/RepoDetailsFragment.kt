@@ -66,8 +66,8 @@ class RepoDetailsFragment : BaseFragment() {
                     view.textViewForks.text = forks_count.toString()
                     view.textViewWatchers.text = watchers_count.toString()
                     view.textViewOpenIssues.text = open_issues_count.toString()
-                    view.textViewLanguage.text = if (language?.isNotEmpty() != true) language else "?"
-                    view.textViewLicense.text = if (license?.name?.isNotEmpty() != true) license?.name else "?"
+                    view.textViewLanguage.text = if(language != null && language.isNotEmpty()) language else "?"
+                    view.textViewLicense.text = if (license?.name != null && license.name.isNotEmpty()) license.name else "?"
                     view.textViewLastUpdated.text =
                             repoDateOutputFormatter.format(repoDateInputFormatter.parse(updated_at))
                     view.textViewFullName.text = full_name
