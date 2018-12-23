@@ -83,4 +83,3 @@ fun networkCall(onSuccess: () -> Unit, onError: (isConnectivityError: Boolean) -
             onError(false)
         }
     )
-

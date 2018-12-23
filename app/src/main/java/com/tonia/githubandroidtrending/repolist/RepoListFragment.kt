@@ -5,26 +5,25 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tonia.githubandroidtrending.BaseFragment
+import com.tonia.githubandroidtrending.MainActivity
 import com.tonia.githubandroidtrending.R
-import com.tonia.githubandroidtrending.network.GitHubService
-import com.tonia.githubandroidtrending.repodetails.RepoDetailsFragment
-import com.tonia.githubandroidtrending.util.*
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.subscribeBy
+import com.tonia.githubandroidtrending.model.Repo
+import com.tonia.githubandroidtrending.util.gone
+import com.tonia.githubandroidtrending.util.toastLong
+import com.tonia.githubandroidtrending.util.visible
 import kotlinx.android.synthetic.main.fragment_repo_list.*
 import kotlinx.android.synthetic.main.fragment_repo_list.view.*
 
-class RepoListFragment : BaseFragment() {
+class RepoListFragment : BaseFragment(), RepoListContract.View {
 
-    private lateinit var parentView: View
-    private lateinit var listAdapter: RepoListAdapter
-    private var compositeDisposable = CompositeDisposable()
-    private var currentPage = 1
-    private var isLoading = true
+    private var parentView: View? = null
+    private var listAdapter: RepoListAdapter? = null
+    private val presenter = RepoListPresenter()
 
     companion object {
         const val TAG = "repo_list_fragment"
@@ -32,6 +31,20 @@ class RepoListFragment : BaseFragment() {
         fun newInstance(): RepoListFragment {
             return RepoListFragment()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        presenter.attach(this)
+        setListAdapter()
+        setListOnScrollListener()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        presenter.detach()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -42,7 +55,7 @@ class RepoListFragment : BaseFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_refresh -> {
-                populateRepoList(refresh = true)
+                presenter.loadRepos(refresh = true)
                 true
             }
             else -> {
@@ -54,96 +67,64 @@ class RepoListFragment : BaseFragment() {
     override fun getContentResource() = R.layout.fragment_repo_list
 
     override fun init(view: View, state: Bundle?) {
-
         parentView = view
+    }
 
-        parentView.recyclerViewRepoList.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
+    private fun setListAdapter() {
+        parentView?.recyclerViewRepoList?.layoutManager = LinearLayoutManager(parentView?.context, RecyclerView.VERTICAL, false)
         listAdapter = RepoListAdapter(mutableListOf()) {
-            (view.context as AppCompatActivity).addFragment(
-                RepoDetailsFragment.newInstance(it), R.id.container, RepoDetailsFragment.TAG
-            )
+            presenter.selectRepo(it)
         }
 
-        parentView.recyclerViewRepoList.adapter = listAdapter
+        parentView?.recyclerViewRepoList?.adapter = listAdapter
+    }
 
-        parentView.recyclerViewRepoList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+    private fun setListOnScrollListener() {
+        parentView?.recyclerViewRepoList?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
                 val itemCount = recyclerView.layoutManager?.itemCount ?: 0
                 val lastVisiblePosition = (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-                loadMore(itemCount, lastVisiblePosition)
+                presenter.loadMoreRepos(itemCount, lastVisiblePosition)
             }
         })
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        compositeDisposable = CompositeDisposable()
-        populateRepoList(refresh = true)
-    }
-
-    private fun loadMore(itemCount: Int, lastVisiblePosition: Int) {
-        if (!isLoading && itemCount <= (lastVisiblePosition + 1)) {
-            currentPage++
-            isLoading = true
-            populateRepoList()
-        }
-    }
-
-    private fun populateRepoList(refresh: Boolean = false) {
-        compositeDisposable.add(
-            networkCall(
-                onSuccess = {
-                    // Get and set repos list
-                    GitHubService.getTrendingRepos(if (refresh) 1 else currentPage)
-                        .doOnSubscribe { parentView.progressBarList.visible() }
-                        .doFinally {
-                            isLoading = false
-                            parentView.progressBarList.gone()
-                        }
-                        .subscribeBy(
-                            onSuccess = { repos ->
-                                if (refresh) {
-                                    listAdapter.refreshRepos(repos)
-                                    parentView.recyclerViewRepoList.scrollToPosition(0)
-                                } else {
-                                    listAdapter.addRepos(repos)
-                                }
-                                listAdapter.notifyDataSetChanged()
-                            },
-                            onError = {
-                                logE(it.message ?: "Error getting repo list.", it)
-                                context?.toastLong(getString(R.string.internet_connection_error_message))
-                            }
-                        )
-                },
-                onError = { isConnectionError ->
-                    isLoading = false
-                    parentView.progressBarList.gone()
-
-                    if (isConnectionError) {
-                        context?.toastLong(getString(R.string.internet_connection_error_message))
-                    } else {
-                        context?.toastLong(getString(R.string.general_error_message))
-                    }
-                })
-        )
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        (parentView.context as AppCompatActivity).setSupportActionBar(toolbar)
-        toolbar.title = getString(R.string.app_name)
+        (context as AppCompatActivity).setSupportActionBar(toolbar)
+        setTitle(getString(R.string.app_name))
         setHasOptionsMenu(true)
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun showProgressBar() {
+        parentView?.progressBarList?.visible()
+    }
 
-        compositeDisposable.clear()
-        compositeDisposable.dispose()
+    override fun hideProgressBar() {
+        parentView?.progressBarList?.gone()
+    }
+
+    override fun showErrorMessage(@StringRes messageResId: Int) {
+        context?.toastLong(getString(messageResId))
+    }
+
+    override fun setTitle(title: String) {
+        toolbar.title = title
+    }
+
+    override fun addRepos(repos: List<Repo>) {
+        listAdapter?.addRepos(repos)
+    }
+
+    override fun refreshRepos(repos: List<Repo>) {
+        listAdapter?.refreshRepos(repos)
+        parentView?.recyclerViewRepoList?.scrollToPosition(0)
+    }
+
+    override fun repoSelected(repo: Repo) {
+        (context as? MainActivity)?.showRepoDetails(repo)
     }
 }

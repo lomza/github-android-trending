@@ -22,10 +22,12 @@ class RepoListAdapter(private var repos: MutableList<Repo>,
 
     fun refreshRepos(repos: List<Repo>) {
         this.repos = repos.toMutableList()
+        notifyDataSetChanged()
     }
 
     fun addRepos(repos: List<Repo>) {
         this.repos.addAll(repos)
+        notifyDataSetChanged()
     }
 
     class RepoViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
