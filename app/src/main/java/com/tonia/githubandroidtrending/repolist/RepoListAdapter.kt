@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tonia.githubandroidtrending.R
 import com.tonia.githubandroidtrending.model.Repo
+import com.tonia.githubandroidtrending.util.valueOrUnknown
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.view_repo_list_item.*
 
@@ -35,7 +36,7 @@ class RepoListAdapter(private var repos: MutableList<Repo>,
             with(repo) {
                 textViewTitle.text = full_name
                 textViewDesc.text = description
-                textViewLanguage.text = if(language != null && language.isNotEmpty()) language else "?"
+                textViewLanguage.text = language.valueOrUnknown()
                 textViewStars.text = stargazers_count.toString()
                 textViewForks.text = forks_count.toString()
 

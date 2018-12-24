@@ -43,6 +43,12 @@ fun View.invisible() { visibility = View.INVISIBLE }
 
 fun View.gone() { visibility = View.GONE }
 
+fun String?.valueOrUnknown(): String {
+    if (this == null || this.isBlank()) return "?"
+
+    return this
+}
+
 inline fun FragmentManager.transaction(call: FragmentTransaction.() -> FragmentTransaction) {
     beginTransaction().call().commit()
 }
