@@ -16,6 +16,7 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -76,8 +77,21 @@ fun loadImageFromUrl(fragment: Fragment, url: String, imageView: ImageView) {
         .into(imageView)
 }
 
-val repoDateInputFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
-val repoDateOutputFormatter = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
+val repoDateInputFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX", Locale.getDefault())
+val repoDateOutputFormatter = SimpleDateFormat("d MMM yyyy, HH:mm", Locale.getDefault())
+
+fun getRepoDate(unformattedDate: String?): String {
+        if (unformattedDate == null) {
+            return ""
+        }
+
+        return try {
+            repoDateOutputFormatter.format(repoDateInputFormatter.parse(unformattedDate))
+        } catch (e: ParseException) {
+            Log.e("ParseException", "Unparseable date: $unformattedDate", e)
+            ""
+        }
+    }
 
 fun networkCall(onSuccess: () -> Unit, onError: (isConnectivityError: Boolean) -> Unit) = ReactiveNetwork.checkInternetConnectivity()
     .compose(getSchedulersForSingleNetworkCall())

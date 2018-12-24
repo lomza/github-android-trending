@@ -58,6 +58,10 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:$glideVersion"
 
     testImplementation "junit:junit:$jUnitVersion"
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "org.powermock:powermock-core:$powerMockVersion"
+    testImplementation "org.powermock:powermock-module-junit4:$powerMockVersion"
+    testImplementation "org.powermock:powermock-api-mockito2:$powerMockVersion"
     androidTestImplementation "androidx.test:runner:$testRunnerVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
 }

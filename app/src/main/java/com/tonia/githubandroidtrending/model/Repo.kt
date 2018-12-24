@@ -15,7 +15,7 @@ data class Repo(
     val forks_count: Int,
     val watchers_count: Int,
     val open_issues_count: Int,
-    val updated_at: String,
+    val updated_at: String?,
     val owner: Owner,
     val license: License?
 ) : Parcelable

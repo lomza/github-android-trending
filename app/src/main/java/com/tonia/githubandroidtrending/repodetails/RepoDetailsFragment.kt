@@ -81,8 +81,7 @@ class RepoDetailsFragment : BaseFragment(), RepoDetailsContract.View {
                 textViewOpenIssues.text = open_issues_count.toString()
                 textViewLanguage.text =  language.valueOrUnknown()
                 textViewLicense.text = license?.name.valueOrUnknown()
-                textViewLastUpdated.text =
-                        repoDateOutputFormatter.format(repoDateInputFormatter.parse(updated_at))
+                textViewLastUpdated.text = getRepoDate(null)
                 textViewFullName.text = full_name
                 textViewDesc.text = description
                 imageButtonGitHubRepo.setOnClickListener {
@@ -102,7 +101,6 @@ class RepoDetailsFragment : BaseFragment(), RepoDetailsContract.View {
     }
 
     override fun showRepoReadme(url: String) {
-        // load README markdown from specified url
         parentView?.markdownViewReadmeContent?.loadFromUrl(url)
         parentView?.markdownViewReadmeContent?.setOnMarkdownRenderingListener(object :
             MarkdownView.OnMarkdownRenderingListener {
