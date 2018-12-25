@@ -5,7 +5,6 @@ import android.net.Uri
 import com.tonia.githubandroidtrending.R
 import com.tonia.githubandroidtrending.model.Repo
 import com.tonia.githubandroidtrending.network.GitHubService
-import com.tonia.githubandroidtrending.util.EspressoIdlingResource
 import com.tonia.githubandroidtrending.util.networkCall
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
@@ -25,7 +24,6 @@ class RepoDetailsPresenter : RepoDetailsContract.Presenter {
     }
 
     override fun loadRepoReadme(owner: String, repo: String) {
-        EspressoIdlingResource.increment()
         compositeDisposable = CompositeDisposable()
         compositeDisposable.add(
             networkCall(
@@ -39,9 +37,6 @@ class RepoDetailsPresenter : RepoDetailsContract.Presenter {
                             },
                             onSuccess = { response ->
                                 view?.showRepoReadme(response.download_url)
-                                if (!EspressoIdlingResource.getIdlingResource().isIdleNow) {
-                                    EspressoIdlingResource.decrement()
-                                }
                             }
                         )
                 },

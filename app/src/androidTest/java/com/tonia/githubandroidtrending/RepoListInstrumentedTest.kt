@@ -8,14 +8,15 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.tonia.githubandroidtrending.model.Repo
 import com.tonia.githubandroidtrending.repolist.RepoListAdapter
 import com.tonia.githubandroidtrending.util.EspressoIdlingResource
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -27,7 +28,7 @@ import org.junit.runner.RunWith
 class RepoListInstrumentedTest {
 
     @get:Rule
-    var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
+    var activityRule = IntentsTestRule(MainActivity::class.java)
 
     @Before
     fun registerIdlingResource() {
@@ -36,7 +37,7 @@ class RepoListInstrumentedTest {
 
     @After
     fun unregisterIdlingResource() {
-        IdlingRegistry.getInstance().register(EspressoIdlingResource.getIdlingResource())
+        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.getIdlingResource())
     }
 
     @Test
@@ -58,7 +59,12 @@ class RepoListInstrumentedTest {
 
     @Test
     fun repoList_clickShowsRepoDetails() {
-        onView(withId(R.id.recyclerViewRepoList)).perform(RecyclerViewActions.actionOnItemAtPosition<RepoListAdapter.RepoViewHolder>(0, click()))
+        onView(withId(R.id.recyclerViewRepoList)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<RepoListAdapter.RepoViewHolder>(
+                0,
+                click()
+            )
+        )
         onView(withId(R.id.parentDetails)).check(matches(isDisplayed()))
     }
 }
