@@ -3,6 +3,7 @@ package com.tonia.githubandroidtrending.repolist
 import com.tonia.githubandroidtrending.R
 import com.tonia.githubandroidtrending.model.Repo
 import com.tonia.githubandroidtrending.network.GitHubService
+import com.tonia.githubandroidtrending.util.EspressoIdlingResource
 import com.tonia.githubandroidtrending.util.logE
 import com.tonia.githubandroidtrending.util.networkCall
 import io.reactivex.disposables.CompositeDisposable
@@ -17,6 +18,8 @@ class RepoListPresenter : RepoListContract.Presenter {
     override fun loadRepos(refresh: Boolean) {
         if (!isLoading) {
             isLoading = true
+            EspressoIdlingResource.increment()
+
             compositeDisposable.add(
                 networkCall(
                     onSuccess = {
@@ -26,6 +29,9 @@ class RepoListPresenter : RepoListContract.Presenter {
                             .doFinally {
                                 isLoading = false
                                 view?.hideProgressBar()
+                                if (!EspressoIdlingResource.getIdlingResource().isIdleNow) {
+                                    EspressoIdlingResource.decrement()
+                                }
                             }
                             .subscribeBy(
 
