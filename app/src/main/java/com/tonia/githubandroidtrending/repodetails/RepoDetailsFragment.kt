@@ -85,7 +85,7 @@ class RepoDetailsFragment : BaseFragment(), RepoDetailsContract.View {
                 textViewOpenIssues.text = open_issues_count.toString()
                 textViewLanguage.text =  language.valueOrUnknown()
                 textViewLicense.text = license?.name.valueOrUnknown()
-                textViewLastUpdated.text = getRepoDate(null)
+                textViewLastUpdated.text = getRepoDate(updated_at)
                 textViewFullName.text = full_name
                 textViewDesc.text = description
                 imageButtonGitHubRepo.setOnClickListener {
