@@ -6,6 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
+/**
+ * Base fragment, that all concrete fragments should extend.
+ */
 abstract class BaseFragment : Fragment(), BaseView {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

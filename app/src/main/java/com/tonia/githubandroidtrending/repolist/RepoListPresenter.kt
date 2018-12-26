@@ -9,6 +9,9 @@ import com.tonia.githubandroidtrending.util.networkCall
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 
+/**
+ * Presenter for the Repo List fragment. Contains data fetching and transform logic.
+ */
 class RepoListPresenter : RepoListContract.Presenter {
     private var view: RepoListContract.View? = null
     private var compositeDisposable = CompositeDisposable()

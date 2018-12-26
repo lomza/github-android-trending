@@ -19,6 +19,10 @@ import com.tonia.githubandroidtrending.util.visible
 import kotlinx.android.synthetic.main.fragment_repo_list.*
 import kotlinx.android.synthetic.main.fragment_repo_list.view.*
 
+/**
+ * Fragment, that shows the list of GitHub repositories.
+ * Contains the presenter and refreshes the UI on presenter's callbacks.
+ */
 class RepoListFragment : BaseFragment(), RepoListContract.View {
 
     private var parentView: View? = null

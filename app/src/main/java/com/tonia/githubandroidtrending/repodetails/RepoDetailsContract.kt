@@ -5,6 +5,9 @@ import androidx.annotation.StringRes
 import com.tonia.githubandroidtrending.BasePresenter
 import com.tonia.githubandroidtrending.model.Repo
 
+/**
+ * MVP contract for Repo Details fragment.
+ */
 class RepoDetailsContract {
     interface Presenter : BasePresenter<View> {
         fun loadRepo(repo: Repo?)

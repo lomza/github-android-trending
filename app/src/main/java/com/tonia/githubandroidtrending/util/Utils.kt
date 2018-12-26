@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 /**
- * General extension functions, top-level variables and functions, used all across the project.
+ * General extension functions, top-level values and functions, used all across the project.
  */
 
 fun Any.logD(message: String) { Log.d(this.javaClass.simpleName, message) }

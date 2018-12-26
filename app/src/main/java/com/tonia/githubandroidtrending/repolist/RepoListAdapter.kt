@@ -10,6 +10,9 @@ import com.tonia.githubandroidtrending.util.valueOrUnknown
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.view_repo_list_item.*
 
+/**
+ * RecyclerView adapter for Repo List array of data.
+ */
 class RepoListAdapter(private var repos: MutableList<Repo>,
                       private val listener: (Repo) -> Unit) : RecyclerView.Adapter<RepoListAdapter.RepoViewHolder>() {
 

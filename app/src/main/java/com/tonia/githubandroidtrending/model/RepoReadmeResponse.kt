@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-class RepoReadmeResponse (
+data class RepoReadmeResponse (
     val type: String,
     val encoding: String,
     val size: Int,

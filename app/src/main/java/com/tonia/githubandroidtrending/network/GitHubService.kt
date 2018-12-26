@@ -13,6 +13,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * GitHub service object which acts like an entry point to GitHub API calls.
+ * Uses OkHttp for logging API calls bodies (only in DEBUG) and Retrofit
+ * as a network & API client.
  */
 object GitHubService {
 

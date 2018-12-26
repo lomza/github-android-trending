@@ -5,6 +5,9 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.annotation.Nullable
 
+/**
+ * Base view to be implemented by all fragments.
+ */
 interface BaseView {
 
     @LayoutRes

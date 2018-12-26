@@ -8,6 +8,10 @@ import com.tonia.githubandroidtrending.repolist.RepoListFragment
 import com.tonia.githubandroidtrending.util.addFragment
 import com.tonia.githubandroidtrending.util.replaceFragment
 
+/**
+ * Main (and single) activity for this app.
+ * Contains and manages all the fragments in it.
+ */
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

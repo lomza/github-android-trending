@@ -15,6 +15,10 @@ import es.dmoral.markdownview.MarkdownView
 import kotlinx.android.synthetic.main.fragment_repo_details.view.*
 import kotlinx.android.synthetic.main.fragment_repo_list.*
 
+/**
+ * Fragment, that shows the details of a chosen GitHub repo.
+ * Contains the presenter and refreshes the UI on presenter's callbacks.
+ */
 class RepoDetailsFragment : BaseFragment(), RepoDetailsContract.View {
 
     private var parentView: View? = null
