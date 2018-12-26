@@ -13,7 +13,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tonia.githubandroidtrending.model.License
 import com.tonia.githubandroidtrending.model.Owner
 import com.tonia.githubandroidtrending.model.Repo
@@ -22,9 +21,7 @@ import org.hamcrest.Matchers.allOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
 class RepoDetailsInstrumentedTest {
 
     @get:Rule
