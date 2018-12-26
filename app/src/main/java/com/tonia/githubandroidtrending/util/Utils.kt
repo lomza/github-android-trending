@@ -18,7 +18,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 /**
  * General extension functions, top-level values and functions, used all across the project.

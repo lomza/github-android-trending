@@ -6,12 +6,12 @@ import com.tonia.githubandroidtrending.util.repoDateInputFormatter
 import com.tonia.githubandroidtrending.util.repoDateOutputFormatter
 import org.junit.Test
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
 import org.powermock.api.mockito.PowerMockito
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.powermock.modules.junit4.PowerMockRunner
-import java.util.*
+import java.util.TimeZone
 
 @RunWith(PowerMockRunner::class)
 @PrepareForTest(Log::class)

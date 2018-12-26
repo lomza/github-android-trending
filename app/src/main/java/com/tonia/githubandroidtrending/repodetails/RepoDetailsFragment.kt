@@ -10,7 +10,12 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tonia.githubandroidtrending.BaseFragment
 import com.tonia.githubandroidtrending.R
 import com.tonia.githubandroidtrending.model.Repo
-import com.tonia.githubandroidtrending.util.*
+import com.tonia.githubandroidtrending.util.visible
+import com.tonia.githubandroidtrending.util.gone
+import com.tonia.githubandroidtrending.util.toastLong
+import com.tonia.githubandroidtrending.util.loadImageFromUrl
+import com.tonia.githubandroidtrending.util.valueOrUnknown
+import com.tonia.githubandroidtrending.util.getRepoDate
 import es.dmoral.markdownview.MarkdownView
 import kotlinx.android.synthetic.main.fragment_repo_details.view.*
 import kotlinx.android.synthetic.main.fragment_repo_list.*
@@ -83,7 +88,7 @@ class RepoDetailsFragment : BaseFragment(), RepoDetailsContract.View {
                 textViewForks.text = forks_count.toString()
                 textViewWatchers.text = watchers_count.toString()
                 textViewOpenIssues.text = open_issues_count.toString()
-                textViewLanguage.text =  language.valueOrUnknown()
+                textViewLanguage.text = language.valueOrUnknown()
                 textViewLicense.text = license?.name.valueOrUnknown()
                 textViewLastUpdated.text = getRepoDate(updated_at)
                 textViewFullName.text = full_name
