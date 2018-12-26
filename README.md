@@ -1,7 +1,7 @@
 # github-android-trending
 
 Android app that shows the list of trending Android repositories on GitHub, starting from the most popular ones.
-Written in Kotlin, and uses many popular libraries, such as RxJava, Retrofit, Glide, Espresso, and others.
+Written in Kotlin, follows MVP architecture, and uses many popular libraries, such as RxJava, Retrofit, Glide, Espresso, and others.
 
 <p align="middle">
   <img src="repo_list.png" width="300">
